@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía AI LATAM — Implementación por Rol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg-card: #111118;
+    --bg-card-hover: #16161f;
+    --surface: #1a1a25;
+    --border: #2a2a3a;
+    --border-accent: #3a3a50;
+    --text: #e8e8f0;
+    --text-dim: #8888a0;
+    --text-muted: #5a5a70;
+    --accent-cyan: #00d4ff;
+    --accent-cyan-dim: rgba(0,212,255,0.15);
+    --accent-green: #00ff88;
+    --accent-green-dim: rgba(0,255,136,0.12);
+    --accent-purple: #a855f7;
+    --accent-purple-dim: rgba(168,85,247,0.12);
+    --accent-orange: #ff8800;
+    --accent-orange-dim: rgba(255,136,0,0.12);
+    --accent-pink: #ff4488;
+    --accent-pink-dim: rgba(255,68,136,0.12);
+    --accent-yellow: #ffd000;
+    --accent-yellow-dim: rgba(255,208,0,0.12);
+    --accent-blue: #4488ff;
+    --accent-blue-dim: rgba(68,136,255,0.12);
+    --accent-red: #ff4444;
+    --accent-red-dim: rgba(255,68,68,0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ===================== HERO ===================== */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(0,212,255,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 80%, rgba(168,85,247,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(0,255,136,0.03) 0%, transparent 40%);
+    animation: heroGlow 12s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+
+  @keyframes heroGlow {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-2%, 2%) scale(1.05); }
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-cyan-dim);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 100px;
+    padding: 6px 18px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent-cyan);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease-out;
+  }
+
+  .hero-badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s ease-out 0.15s both;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-desc {
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    animation: fadeUp 0.8s ease-out 0.3s both;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    animation: fadeUp 0.8s ease-out 0.45s both;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat { text-align: center; }
+
+  .hero-stat-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+  }
+
+  .hero-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bobDown 2s ease-in-out infinite;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-align: center;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .scroll-cue-line {
+    display: block;
+    width: 1px;
+    height: 30px;
+    background: linear-gradient(to bottom, var(--text-muted), transparent);
+    margin: 8px auto 0;
+  }
+
+  @keyframes bobDown {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ===================== NAV ===================== */
+  .sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.85);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sticky-nav::-webkit-scrollbar { height: 0; }
+
+  .sticky-nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+    padding: 0;
+    min-width: max-content;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 16px;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .nav-link:hover, .nav-link:focus {
+    color: var(--text);
+    border-bottom-color: var(--accent-cyan);
+  }
+
+  .nav-icon { font-size: 1rem; opacity: 0.7; }
+
+  /* ===================== SECTIONS ===================== */
+  .section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .section-header h2 {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-header p {
+    color: var(--text-dim);
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 1rem;
+  }
+
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
+    margin: 0 auto;
+  }
+
+  /* ===================== PHASES ===================== */
+  .phases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .phase-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s, border-color 0.3s, transform 0.3s;
+  }
+
+  .phase-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+  }
+
+  .phase-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+
+  .phase-bar-1 { background: var(--accent-cyan); }
+  .phase-bar-2 { background: var(--accent-green); }
+  .phase-bar-3 { background: var(--accent-purple); }
+  .phase-bar-4 { background: var(--accent-orange); }
+
+  .phase-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .phase-card h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .phase-time {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 1rem;
+  }
+
+  .phase-desc {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .phase-gate {
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    border-left: 2px solid var(--accent-cyan);
+  }
+
+  .phase-gate strong {
+    color: var(--text);
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ===================== ROLE CARDS ===================== */
+  .roles-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .role-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .role-card:hover { border-color: var(--border-accent); }
+
+  .role-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  .role-header:hover { background: var(--bg-card-hover); }
+
+  .role-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .role-header-text { flex: 1; min-width: 0; }
+
+  .role-header-text h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .role-header-text span {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    display: block;
+  }
+
+  .role-toggle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    transition: transform 0.3s, border-color 0.3s, color 0.3s;
+    flex-shrink: 0;
+  }
+
+  .role-card.is-open .role-toggle {
+    transform: rotate(180deg);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+
+  .role-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+
+  .role-card.is-open .role-body {
+    max-height: 5000px;
+  }
+
+  .role-body-inner { padding: 0 2rem 2rem; }
+
+  .role-section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    margin: 1.5rem 0 0.75rem;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .use-cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .use-case {
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.2rem;
+    border: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .use-case:hover { border-color: var(--border); }
+
+  .use-case h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .use-case p {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .tools-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tool-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    border: 1px solid;
+    transition: transform 0.2s;
+  }
+
+  .tool-tag:hover { transform: translateY(-1px); }
+
+  .tool-tag.core { background: var(--accent-cyan-dim); border-color: rgba(0,212,255,0.2); color: var(--accent-cyan); }
+  .tool-tag.quality { background: var(--accent-green-dim); border-color: rgba(0,255,136,0.15); color: var(--accent-green); }
+  .tool-tag.ai { background: var(--accent-purple-dim); border-color: rgba(168,85,247,0.15); color: var(--accent-purple); }
+  .tool-tag.infra { background: var(--accent-orange-dim); border-color: rgba(255,136,0,0.15); color: var(--accent-orange); }
+  .tool-tag.integration { background: var(--accent-blue-dim); border-color: rgba(68,136,255,0.15); color: var(--accent-blue); }
+  .tool-tag.docs { background: var(--accent-yellow-dim); border-color: rgba(255,208,0,0.15); color: var(--accent-yellow); }
+  .tool-tag.security { background: var(--accent-red-dim); border-color: rgba(255,68,68,0.15); color: var(--accent-red); }
+
+  .kpis-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 0.5rem;
+  }
+
+  .kpi-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .kpi-val {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    color: var(--accent-green);
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 10px;
+  }
+
+  .skill-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 0.82rem;
+  }
+
+  .skill-item code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent-cyan);
+    white-space: nowrap;
+  }
+
+  .skill-item span { color: var(--text-dim); font-size: 0.78rem; }
+
+  /* ===================== PRINCIPLES ===================== */
+  .principles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .principle-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .principle-card:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+  }
+
+  .principle-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+
+  .principle-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+
+  .principle-card p { font-size: 0.85rem; color: var(--text-dim); }
+
+  /* ===================== RISKS TABLE ===================== */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  .risks-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    min-width: 700px;
+  }
+
+  .risks-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    background: var(--surface);
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .risks-table td {
+    padding: 14px 16px;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .risks-table tr:last-child td { border-bottom: none; }
+
+  .risks-table td:first-child { color: var(--text); font-weight: 600; white-space: nowrap; }
+
+  .risk-severity {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .risk-high { background: var(--accent-red-dim); color: var(--accent-red); }
+  .risk-med { background: var(--accent-orange-dim); color: var(--accent-orange); }
+
+  /* ===================== FOOTER ===================== */
+  .footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+
+  .footer strong { color: var(--text-dim); }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 768px) {
+    .hero-stats { gap: 1.5rem; }
+    .role-body-inner { padding: 0 1rem 1.5rem; }
+    .role-header { padding: 1.2rem; }
+    .section { padding: 3rem 1rem; }
+    .use-cases-grid { grid-template-columns: 1fr; }
+    .nav-link { padding: 12px 12px; font-size: 0.78rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="hero-badge-dot"></span> Guía de Implementación 2026</div>
+    <h1>Adopción de <span class="gradient-text">AI Tools</span> para cuentas LATAM</h1>
+    <p class="hero-desc">De la concientización a la productividad real. Casos de uso, herramientas y métricas por rol para transformar el delivery de cada cuenta.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value">8</div>
+        <div class="hero-stat-label">Roles cubiertos</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">3</div>
+        <div class="hero-stat-label">Fases de rollout</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">2–10×</div>
+        <div class="hero-stat-label">Aceleración objetivo</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">Claude Code</div>
+        <div class="hero-stat-label">Herramienta central</div>
+      </div>
+    </div>
+  </div>
+  <a href="#fases" class="scroll-cue">Scroll<span class="scroll-cue-line"></span></a>
+</section>
+
+<!-- ==================== NAV ==================== -->
+<nav class="sticky-nav">
+  <div class="sticky-nav-inner">
+    <a class="nav-link" href="#fases"><span class="nav-icon">◆</span> Fases</a>
+    <a class="nav-link" href="#developers"><span class="nav-icon">⌨</span> Developers</a>
+    <a class="nav-link" href="#qa"><span class="nav-icon">✓</span> QA</a>
+    <a class="nav-link" href="#devops"><span class="nav-icon">⚙</span> DevOps</a>
+    <a class="nav-link" href="#uxui"><span class="nav-icon">◎</span> UX/UI</a>
+    <a class="nav-link" href="#pm"><span class="nav-icon">▣</span> Project Managers</a>
+    <a class="nav-link" href="#sm"><span class="nav-icon">↻</span> Scrum Masters</a>
+    <a class="nav-link" href="#funcional"><span class="nav-icon">≡</span> Analistas Func.</a>
+    <a class="nav-link" href="#data"><span class="nav-icon">◈</span> Data</a>
+    <a class="nav-link" href="#aiml"><span class="nav-icon">◇</span> AI/ML</a>
+    <a class="nav-link" href="#principios"><span class="nav-icon">★</span> Principios</a>
+    <a class="nav-link" href="#riesgos"><span class="nav-icon">⚠</span> Riesgos</a>
+  </div>
+</nav>
+
+<!-- ==================== FASES ==================== -->
+<section class="section" id="fases">
+  <div class="section-header">
+    <h2>Fases de Implementación</h2>
+    <p>Gradualidad deliberada: la confianza se construye en iteraciones cortas con feedback loops cerrados.</p>
+  </div>
+  <div class="phases-grid">
+    <div class="phase-card">
+      <div class="phase-bar phase-bar-1"></div>
+      <div class="phase-num">Fase 1</div>
+      <h3>Exploración Controlada</h3>
+      <div class="phase-time">Semanas 1–4</div>
+      <div class="phase-desc">Piloto con 2–3 cuentas. Onboarding de Leads y Seniors. Foco en Q&amp;A, bug fixes, tests unitarios. Assessment de madurez y setup de licencias Enterprise con SSO.</div>
+      <div class="phase-gate"><strong>Gate de avance</strong>≥70% satisfacción + 1 caso de mejora medible documentado</div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-bar phase-bar-2"></div>
+      <div class="phase-num">Fase 2</div>
+      <h3>Expansión Guiada</h3>
+      <div class="phase-time">Semanas 5–10</div>
+      <div class="phase-desc">Extensión a todos los equipos de Delivery. Claude Code para QAs, DevOps, Analistas. CLAUDE.md por cuenta. Integraciones MCP con Jira, Confluence, Slack. Primeros skills activos.</div>
+      <div class="phase-gate"><strong>Gate de avance</strong>Adopción activa ≥60% + métricas de impacto positivas</div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-bar phase-bar-3"></div>
+      <div class="phase-num">Fase 3</div>
+      <h3>Operación Autónoma</h3>
+      <div class="phase-time">Semanas 11+</div>
+      <div class="phase-desc">Modo agéntico en features completas, migraciones, refactors. Workflows multi-agente. PMs y SMs integran AI. Revisión mensual de métricas e impacto en delivery.</div>
+      <div class="phase-gate"><strong>Gate de avance</strong>Adopción ≥85% + mejora en ≥2 KPIs de calidad</div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-bar phase-bar-4"></div>
+      <div class="phase-num">Fase 4</div>
+      <h3>Optimización y ROI</h3>
+      <div class="phase-time">Revisión Trimestral</div>
+      <div class="phase-desc">Análisis comparativo Lead Time vs baseline. Biblioteca de agentes y prompts consolidada. Showcase de éxito y ajuste del modelo de cara al siguiente año.</div>
+      <div class="phase-gate"><strong>Gate de avance</strong>Reporte de impacto + biblioteca de activos AI del área</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== ROLES ==================== -->
+<section class="section" id="roles">
+  <div class="section-header">
+    <h2>Guía por Rol</h2>
+    <p>Casos de uso concretos, herramientas recomendadas y métricas de impacto para cada perfil del equipo de Delivery.</p>
+  </div>
+
+  <div class="roles-grid">
+
+    <!-- ======= DEVELOPERS ======= -->
+    <div class="role-card is-open" id="developers">
+      <div class="role-header" onclick="toggleRole(this)">
+        <div class="role-icon" style="background:var(--accent-cyan-dim);color:var(--accent-cyan);">⌨</div>
+        <div class="role-header-text">
+          <h3>Developers</h3>
+          <span>Frontend · Backend · Fullstack — Rol de mayor impacto inmediato</span>
+        </div>
+        <div class="role-toggle">▼</div>
+      </div>
+      <div class="role-body">
+        <div class="role-body-inner">
+          <div class="role-section-title">Casos de Uso</div>
+          <div class="use-cases-grid">
+            <div class="use-case">
+              <h4>Vibe Coding &amp; Prototipado</h4>
+              <p>Prototipado rápido de features completas a partir de specs. Scaffolding de módulos, controladores, rutas y modelos.</p>
+            </div>
+            <div class="use-case">
+              <h4>Refactor &amp; Modernización</h4>
+              <p>Migración de código legacy, actualización de dependencias, mejora de patrones. Propuesta de mejoras para código antiguo.</p>
+            </div>
+            <div class="use-case">
+              <h4>Tests Unitarios &amp; Cobertura</h4>
+              <p>Generación automática de test suites con naming descriptivo. La IA genera estructura, el dev valida la lógica.</p>
+            </div>
+            <div class="use-case">
+              <h4>Code Review Asistido</h4>
+              <p>Resumen de cambios en PRs, detección de fallos de seguridad y deuda técnica. Review automático como primer filtro.</p>
+            </div>
+            <div class="use-case">
+              <h4>Documentación Técnica</h4>
+              <p>Generación de docstrings, JSDoc, READMEs, changelogs. Documentación en línea con cada cambio de código.</p>
+            </div>
+            <div class="use-case">
+              <h4>Debugging Sistemático</h4>
+              <p>Framework de 4 fases: reproducir, trazar causa raíz, validar fix, verificar regresiones. Sin fix sin investigación.</p>
+            </div>
+          </div>
+          <div class="role-section-title">Herramientas &amp; Skills</div>
+          <div class="tools-list">
+            <span class="tool-tag core">Claude Code</span>
+            <span class="tool-tag ai">GitHub Copilot Enterprise</span>
+            <span class="tool-tag quality">SonarQube / CodeClimate</span>
+            <span class="tool-tag ai">obra/superpowers (TDD, subagents)</span>
+            <span class="tool-tag security">trailofbits/skills (seguridad)</span>
+            <span class="tool-tag ai">obra/systematic-debugging</span>
+            <span class="tool-tag ai">obra/brainstorming (spec refinement)</span>
+            <span class="tool-tag ai">obra/verification-before-completion</span>
+            <span class="tool-tag docs">NeoLabHQ/ddd (Clean Arch)</span>
+            <span class="tool-tag integration">MCP: GitHub / GitLab</span>
+            <span class="tool-tag integration">MCP: Jira / Linear</span>
+          </div>
+          <div class="role-section-title">KPIs Esperados</div>
+          <div class="kpis-row">
+            <div class="kpi-chip"><span class="kpi-val">-20%</span> Time to First Commit (Jr)</div>
+            <div class="kpi-chip"><span class="kpi-val">+15%</span> Aprobación PRs 1er intento (Jr)</div>
+            <div class="kpi-chip"><span class="kpi-val">+15–20%</span> Cobertura de tests (SSr)</div>
+            <div class="kpi-chip"><span class="kpi-val">-30%</span> Tiempo en boilerplate (SSr)</div>
+            <div class="kpi-chip"><span class="kpi-val">-25%</span> Tiempo en code reviews (Sr)</div>
+            <div class="kpi-chip"><span class="kpi-val">+10%</span> Tickets de refactor resueltos (Sr)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= QA ======= -->
+    <div class="role-card" id="qa">
+      <div class="role-header" onclick="toggleRole(this)">
+        <div class="role-icon" style="background:var(--accent-green-dim);color:var(--accent-green);">✓</div>
+        <div class="role-header-text">
+          <h3>QA / Testers</h3>
+          <span>Mayor impacto numérico — muchas tareas mecánicas se aceleran drásticamente</span>
+        </div>
+        <div class="role-toggle">▼</div>
+      </div>
+      <div class="role-body">
+        <div class="role-body-inner">
+          <div class="role-section-title">Casos de Uso</div>
+          <div class="use-cases-grid">
+            <div class="use-case">
+              <h4>Diseño de Planes de Prueba</h4>
+              <p>Generación de borradores de casos de prueba a partir de Historias de Usuario. Detección proactiva de corner cases.</p>
+            </div>
+            <div class="use-case">
+              <h4>Automatización de Tests</h4>
+              <p>Conversión de pruebas manuales a scripts de Selenium, Cypress, Playwright. Mantenimiento de selectores ante cambios de UI.</p>
+            </div>
+            <div class="use-case">
+              <h4>Análisis de Logs &amp; Root Cause</h4>
+              <p>Análisis inteligente de logs para identificar causa raíz sin leer miles de líneas. Diagnóstico acelerado de errores.</p>
+            </div>
+            <div class="use-case">
+              <h4>Generación de Datos de Prueba</h4>
+              <p>Transformación y preparación de datasets para escenarios específicos. Generación de mocks y fixtures contextualizados.</p>
+            </div>
+            <div class="use-case">
+              <h4>Análisis de Coverage</h4>
+              <p>Detección de casos límite no cubiertos. Reporte de gaps de testing con contexto técnico enriquecido.</p>
+            </div>
+            <div class="use-case">
+              <h4>Reporte de Bugs Contextualizado</h4>
+              <p>Documentación de bugs con mayor contexto técnico: stack traces, pasos de reproducción, impacto estimado.</p>
+            </div>
+          </div>
+          <div class="role-section-title">Herramientas &amp; Skills</div>
+          <div class="tools-list">
+            <span class="tool-tag core">Claude Code</span>
+            <span class="tool-tag quality">Playwright / Cypress / Selenium</span>
+            <span class="tool-tag ai">anthropics/webapp-testing</span>
+            <span class="tool-tag ai">lackeyjb/playwright-skill</span>
+            <span class="tool-tag ai">obra/test-driven-development</span>
+            <span class="tool-tag ai">obra/testing-anti-patterns</span>
+            <span class="tool-tag quality">trailofbits/testing-handbook</span>
+            <span class="tool-tag ai">alirezarezvani/qa-engineer</span>
+            <span class="tool-tag integration">MCP: Jira (leer tickets)</span>
+            <span class="tool-tag integration">MCP: Sentry (logs)</span>
+          </div>
+          <div class="role-section-title">KPIs Esperados</div>
+          <div class="kpis-row">
+            <div class="kpi-chip"><span class="kpi-val">-30%</span> Tiempo redacción de casos</div>
+            <div class="kpi-chip"><span class="kpi-val">+20%</span> Cobertura escenarios críticos</div>
+            <div class="kpi-chip"><span class="kpi-val">+25%</span> Velocidad manual a automático</div>
+            <div class="kpi-chip"><span class="kpi-val">-25%</span> Tiempo diagnóstico de errores</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= DEVOPS ======= -->
+    <div class="role-card" id="devops">
+      <div class="role-header" onclick="toggleRole(this)">
+        <div class="role-icon" style="background:var(--accent-orange-dim);color:var(--accent-orange);">⚙</div>
+        <div class="role-header-text">
+          <h3>DevOps / Infraestructura</h3>
+          <span>IaC, pipelines, diagnóstico y automatización operativa</span>
+        </div>
+        <div class="role-toggle">▼</div>
+      </div>
+      <div class="role-body">
+        <div class="role-body-inner">
+          <div class="role-section-title">Casos de Uso</div>
+          <div class="use-cases-grid">
+            <div class="use-case">
+              <h4>Generación &amp; Revisión de IaC</h4>
+              <p>Escritura y validación de Terraform, CloudFormation, CDK. Refactorización de módulos y detección de drift.</p>
+            </div>
+            <div class="use-case">
+              <h4>Diagnóstico de Pipelines</h4>
+              <p>Análisis de errores en CI/CD, lectura de builds fallidos. Propuesta de fixes directamente desde el terminal.</p>
+            </div>
+            <div class="use-case">
+              <h4>Automatización Operativa</h4>
+              <p>Scripts de tareas repetitivas, configuración de ambientes, gestión de secrets y variables de entorno.</p>
+            </div>
+            <div class="use-case">
+              <h4>Documentación de Runbooks</h4>
+              <p>Generación de runbooks, diagramas de arquitectura y documentación de procedimientos operativos.</p>
+            </div>
+            <div class="use-case">
+              <h4>Configuración de MCP Servers</h4>
+              <p>Setup centralizado de servidores MCP para integración con herramientas de monitoreo (Datadog, CloudWatch, Sentry).</p>
+            </div>
+            <div class="use-case">
+              <h4>Observabilidad &amp; Debugging</h4>
+              <p>Análisis de logs de producción, identificación de patrones de error, optimización de alertas y dashboards.</p>
+            </div>
+          </div>
+          <div class="role-section-title">Herramientas &amp; Skills</div>
+          <div class="tools-list">
+            <span class="tool-tag core">Claude Code</span>
+            <span class="tool-tag infra">hashicorp/terraform-code-generation</span>
+            <span class="tool-tag infra">hashicorp/terraform-module-generation</span>
+            <span class="tool-tag infra">zxkane/aws-skills (CDK, serverless)</span>
+            <span class="tool-tag security">varlock-claude-skill (secrets)</span>
+            <span class="tool-tag ai">getsentry/claude-settings-audit</span>
+            <span class="tool-tag integration">MCP: CI/CD pipelines</span>
+            <span class="tool-tag integration">MCP: Datadog / CloudWatch</span>
+            <span class="tool-tag integration">MCP: Sentry</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= UX/UI ======= -->
+    <div class="role-card" id="uxui">
+      <div class="role-header" onclick="toggleRole(this)">
+        <div class="role-icon" style="background:var(--accent-pink-dim);color:var(--accent-pink);">◎</div>
+        <div class="role-header-text">
+          <h3>UX / UI</h3>
+          <span>La IA acelera la exploración y documentación — no diseña por nosotros</span>
+        </div>
+        <div class="role-toggle">▼</div>
+      </div>
+      <div class="role-body">
+        <div class="role-body-inner">
+          <div class="role-section-title">Casos de Uso</div>
+          <div class="use-cases-grid">
+            <div class="use-case">
+              <h4>Ideación: User Flows &amp; Wireframes</h4>
+              <p>Borradores de mapas de sitio y flujos de usuario basados en requerimientos. Wireframes de baja fidelidad asistidos.</p>
+            </div>
+            <div class="use-case">
+              <h4>Variantes de Componentes</h4>
+              <p>Generación rápida de variantes visuales, iconografía, assets y aplicación de estilos a gran escala. 3 propuestas en el tiempo de 1.</p>
+            </div>
+            <div class="use-case">
+              <h4>Microcopy &amp; Conversión</h4>
+              <p>Optimización de textos de interfaz para mejorar conversión. Tono, claridad y call-to-actions más efectivos.</p>
+            </div>
+            <div class="use-case">
+              <h4>Auditoría de Accesibilidad</h4>
+              <p>Auditoría WCAG en tiempo real: contraste, tamaño de fuente, navegación por voz, atributos ARIA.</p>
+            </div>
+            <div class="use-case">
+              <h4>Análisis de Feedback de Usuarios</h4>
+              <p>Procesamiento rápido de encuestas y feedback cualitativo para detectar patrones de dolor en la experiencia.</p>
+            </div>
+            <div class="use-case">
+              <h4>Validación de Flujos</h4>
+              <p>Revisión de flujos contra buenas prácticas de usabilidad (leyes HCI, CRAP, task-oriented UX).</p>
+            </div>
+          </div>
+          <div class="role-section-title">Herramientas &amp; Skills</div>
+          <div class="tools-list">
+            <span class="tool-tag core">Claude (claude.ai)</span>
+            <span class="tool-tag ai">oiloil-ui-ux-guide</span>
+            <span class="tool-tag ai">design-auditor (WCAG, 17 reglas)</span>
+            <span class="tool-tag ai">vercel-labs/web-design-guidelines</span>
+            <span class="tool-tag ai">google-labs/shadcn-ui</span>
+            <span class="tool-tag core">Claude Code (prototipado)</span>
+            <span class="tool-tag docs">Figma + AI plugins</span>
+          </div>
+          <div class="role-section-title">KPIs Esperados</div>
+          <div class="kpis-row">
+            <div class="kpi-chip"><span class="kpi-val">-25%</span> Tiempo en arquitectura inicial</div>
+            <div class="kpi-chip"><span class="kpi-val">-40%</span> Tiempo en diseño operativo</div>
+            <div class="kpi-chip"><span class="kpi-val">-30%</span> Tiempo en ajustes de microcopy</div>
+            <div class="kpi-chip"><span class="kpi-val">+20%</span> Cumplimiento accesibilidad</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= PM ======= -->
+    <div class="role-card" id="pm">
+      <div class="role-header" onclick="toggleRole(this)">
+        <div class="role-icon" style="background:var(--accent-purple-dim);color:var(--accent-purple);">▣</div>
+        <div class="role-header-text">
+          <h3>Project Managers</h3>
+          <span>Analista de datos + Consultor de comunicación disponible 24/7</span>
+        </div>
+        <div class="role-toggle">▼</div>
+      </div>
+      <div class="role-body">
+        <div class="role-body-inner">
+          <div class="role-section-title">Casos de Uso</div>
+          <div class="use-cases-grid">
+            <div class="use-case">
+              <h4>Status Reports &amp; Minutas</h4>
+              <p>Primer borrador de reportes de estado, minutas de reuniones y comunicaciones a cliente. Ajuste de tono técnico a ejecutivo.</p>
+            </div>
+            <div class="use-case">
+              <h4>Análisis de Métricas</h4>
+              <p>Carga de datos de Jira o planillas para identificar cuellos de botella ocultos en el delivery de la cuenta.</p>
+            </div>
+            <div class="use-case">
+              <h4>Gestión de Personas &amp; 1:1s</h4>
+              <p>Estructuras para sesiones de 1-on-1, planes de carrera personalizados, dinámicas de equipo contextualizadas.</p>
+            </div>
+            <div class="use-case">
+              <h4>Análisis de Deuda Técnica</h4>
+              <p>Traducción de deuda técnica a lenguaje de negocio accesible para stakeholders no técnicos del cliente.</p>
+            </div>
+            <div class="use-case">
+              <h4>Estimaciones con Contexto</h4>
+              <p>Asistencia en estimaciones usando el contexto del codebase para calibrar complejidad real de tareas.</p>
+            </div>
+            <div class="use-case">
+              <h4>Comunicación Técnica con Cliente</h4>
+              <p>Drafting de emails complejos, documentación de decisiones técnicas y sus implicancias de negocio.</p>
+            </div>
+          </div>
+          <div class="role-section-title">Herramientas &amp; Skills</div>
+          <div class="tools-list">
+            <span class="tool-tag core">Claude (claude.ai)</span>
+            <span class="tool-tag ai">alirezarezvani/product-manager</span>
+            <span class="tool-tag integration">MCP: Jira (métricas sprint)</span>
+            <span class="tool-tag integration">MCP: Confluence (docs)</span>
+            <span class="tool-tag integration">MCP: Slack (decisiones)</span>
+            <span class="tool-tag integration">MCP: Google Calendar</span>
+            <span class="tool-tag docs">Claude Projects (contexto cuenta)</span>
+          </div>
+          <div class="role-section-title">KPIs Esperados</div>
+          <div class="kpis-row">
+            <div class="kpi-chip"><span class="kpi-val">-35%</span> Tiempo en redacción de reportes</div>
+            <div class="kpi-chip"><span class="kpi-val">-25%</span> Tiempo en diagnóstico de cuenta</div>
+            <div class="kpi-chip"><span class="kpi-val">-20%</span> Admin de gestión de talento</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= SCRUM MASTERS ======= -->
+    <div class="role-card" id="sm">
+      <div class="role-header" onclick="toggleRole(this)">
+        <div class="role-icon" style="background:var(--accent-blue-dim);color:var(--accent-blue);">↻</div>
+        <div class="role-header-text">
+          <h3>Scrum Masters</h3>
+          <span>Datos objetivos para facilitar retrospectivas y detectar impedimentos</span>
+        </div>
+        <div class="role-toggle">▼</div>
+      </div>
+      <div class="role-body">
+        <div class="role-body-inner">
+          <div class="role-section-title">Casos de Uso</div>
+          <div class="use-cases-grid">
+            <div class="use-case">
+              <h4>Análisis de Sprint &amp; Tendencias</h4>
+              <p>Análisis de métricas de sprint y tendencias históricas. Velocity, throughput, lead time con visualización clara.</p>
+            </div>
+            <div class="use-case">
+              <h4>Facilitación de Retrospectivas</h4>
+              <p>Datos objetivos del historial del proyecto para enriquecer retros. Patrones recurrentes y puntos de mejora documentados.</p>
+            </div>
+            <div class="use-case">
+              <h4>Detección de Impedimentos</h4>
+              <p>Identificación de impedimentos recurrentes a partir del análisis de tickets bloqueados y cycle times anómalos.</p>
+            </div>
+            <div class="use-case">
+              <h4>Artefactos de Proceso</h4>
+              <p>Generación de Definition of Done, Definition of Ready, team agreements y otros artefactos de equipo.</p>
+            </div>
+          </div>
+          <div class="role-section-title">Herramientas &amp; Skills</div>
+          <div class="tools-list">
+            <span class="tool-tag core">Claude (claude.ai)</span>
+            <span class="tool-tag ai">alirezarezvani/agile-po</span>
+            <span class="tool-tag integration">MCP: Jira (sprint data)</span>
+            <span class="tool-tag integration">MCP: Confluence</span>
+            <span class="tool-tag integration">MCP: Slack</span>
+            <span class="tool-tag docs">Claude Projects (contexto equipo)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= ANALISTAS FUNCIONALES ======= -->
+    <div class="role-card" id="funcional">
+      <div class="role-header" onclick="toggleRole(this)">
+        <div class="role-icon" style="background:var(--accent-yellow-dim);color:var(--accent-yellow);">≡</div>
+        <div class="role-header-text">
+          <h3>Analistas Funcionales</h3>
+          <span>Refinamiento de historias, criterios de aceptación y documentación de negocio</span>
+        </div>
+        <div class="role-toggle">▼</div>
+      </div>
+      <div class="role-body">
+        <div class="role-body-inner">
+          <div class="role-section-title">Casos de Uso</div>
+          <div class="use-cases-grid">
+            <div class="use-case">
+              <h4>Refinamiento de User Stories</h4>
+              <p>Completar y enriquecer historias de usuario con contexto del codebase. Detección de ambigüedades y dependencias.</p>
+            </div>
+            <div class="use-case">
+              <h4>Criterios de Aceptación</h4>
+              <p>Generación de criterios desde documentación existente. Given-When-Then con cobertura de edge cases.</p>
+            </div>
+            <div class="use-case">
+              <h4>Análisis de Impacto</h4>
+              <p>Evaluación del impacto de cambios funcionales sobre el codebase existente. Mapeo de módulos afectados.</p>
+            </div>
+            <div class="use-case">
+              <h4>Documentación de Reglas de Negocio</h4>
+              <p>Documentación de flujos de proceso y reglas de negocio del cliente en formato estructurado y navegable.</p>
+            </div>
+          </div>
+          <div class="role-section-title">Herramientas &amp; Skills</div>
+          <div class="tools-list">
+            <span class="tool-tag core">Claude (claude.ai)</span>
+            <span class="tool-tag core">Claude Code (análisis de código)</span>
+            <span class="tool-tag integration">MCP: Jira (historias)</span>
+            <span class="tool-tag integration">MCP: Confluence (reglas negocio)</span>
+            <span class="tool-tag integration">MCP: Notion</span>
+            <span class="tool-tag docs">Claude Projects (contexto cliente)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= DATA ======= -->
+    <div class="role-card" id="data">
+      <div class="role-header" onclick="toggleRole(this)">
+        <div class="role-icon" style="background:var(--accent-green-dim);color:var(--accent-green);">◈</div>
+        <div class="role-header-text">
+          <h3>Ingenieros &amp; Analistas de Datos</h3>
+          <span>SQL, pipelines, exploración de datos y ETL asistidos</span>
+        </div>
+        <div class="role-toggle">▼</div>
+      </div>
+      <div class="role-body">
+        <div class="role-body-inner">
+          <div class="role-section-title">Casos de Uso</div>
+          <div class="use-cases-grid">
+            <div class="use-case">
+              <h4>Generación &amp; Optimización de SQL</h4>
+              <p>Queries complejas generadas y optimizadas a partir de especificaciones en lenguaje natural. Detección de N+1.</p>
+            </div>
+            <div class="use-case">
+              <h4>Documentación de Pipelines</h4>
+              <p>Documentación automatizada de pipelines de datos y modelos de datos en formato entendible por el equipo.</p>
+            </div>
+            <div class="use-case">
+              <h4>Exploración de Datasets</h4>
+              <p>Análisis exploratorio asistido: estadísticas descriptivas, detección de anomalías, perfilado de datos.</p>
+            </div>
+            <div class="use-case">
+              <h4>Scripts ETL desde Specs</h4>
+              <p>Generación de scripts de extracción, transformación y carga desde especificaciones funcionales del cliente.</p>
+            </div>
+          </div>
+          <div class="role-section-title">Herramientas &amp; Skills</div>
+          <div class="tools-list">
+            <span class="tool-tag core">Claude Code</span>
+            <span class="tool-tag ai">sanjay3290/postgres (read-only SQL)</span>
+            <span class="tool-tag ai">mysql / mssql skills</span>
+            <span class="tool-tag integration">MCP: APIs de datos del cliente</span>
+            <span class="tool-tag docs">Claude Projects (schema docs)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= AI/ML ======= -->
+    <div class="role-card" id="aiml">
+      <div class="role-header" onclick="toggleRole(this)">
+        <div class="role-icon" style="background:var(--accent-purple-dim);color:var(--accent-purple);">◇</div>
+        <div class="role-header-text">
+          <h3>Desarrolladores AI/ML</h3>
+          <span>Co-pilot para modelos, pipelines ML y workflows multi-agente</span>
+        </div>
+        <div class="role-toggle">▼</div>
+      </div>
+      <div class="role-body">
+        <div class="role-body-inner">
+          <div class="role-section-title">Casos de Uso</div>
+          <div class="use-cases-grid">
+            <div class="use-case">
+              <h4>Co-pilot en Desarrollo de Modelos</h4>
+              <p>Asistencia en el desarrollo de modelos y pipelines ML. Feature engineering, hyperparameter tuning, evaluación.</p>
+            </div>
+            <div class="use-case">
+              <h4>Boilerplate para Experimentos</h4>
+              <p>Scaffolding de notebooks, experiment tracking, configuración de MLflow/W&amp;B y estructura de proyectos ML.</p>
+            </div>
+            <div class="use-case">
+              <h4>Documentación de Arquitecturas ML</h4>
+              <p>Documentación de decisiones de modelo, trade-offs de arquitectura y reproducibilidad de experimentos.</p>
+            </div>
+            <div class="use-case">
+              <h4>Workflows Multi-Agente</h4>
+              <p>Prototipado de orquestación: patrón orquestador-ejecutores, pipeline secuencial y revisión cruzada entre agentes.</p>
+            </div>
+            <div class="use-case">
+              <h4>Integraciones API &amp; MCP Custom</h4>
+              <p>Exploración de integraciones con Anthropic API. Servidores MCP custom para herramientas internas de ML.</p>
+            </div>
+          </div>
+          <div class="role-section-title">Herramientas &amp; Skills</div>
+          <div class="tools-list">
+            <span class="tool-tag core">Claude Code</span>
+            <span class="tool-tag ai">mrgoonie/context-engineering</span>
+            <span class="tool-tag ai">obra/subagent-driven-development</span>
+            <span class="tool-tag ai">massimodeluisa/recursive-decomposition</span>
+            <span class="tool-tag integration">Anthropic API (multi-agent)</span>
+            <span class="tool-tag integration">MCP Custom Servers</span>
+            <span class="tool-tag docs">anthropics/mcp-builder</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== PRINCIPIOS ==================== -->
+<section class="section" id="principios">
+  <div class="section-header">
+    <h2>Principios Rectores</h2>
+    <p>Manifiesto de IA del equipo: las reglas innegociables de la adopción.</p>
+  </div>
+  <div class="principles-grid">
+    <div class="principle-card">
+      <span class="principle-icon">&#x1F3AF;</span>
+      <h3>Pilotos, no Pasajeros</h3>
+      <p>La responsabilidad final es humana. Nunca "copy-paste" ciego. La IA propone, el humano revisa y aprueba.</p>
+    </div>
+    <div class="principle-card">
+      <span class="principle-icon">&#x1F512;</span>
+      <h3>Seguridad Innegociable</h3>
+      <p>Solo herramientas Enterprise con SSO. Prohibido subir datos sensibles del cliente a modelos no controlados.</p>
+    </div>
+    <div class="principle-card">
+      <span class="principle-icon">&#x1F48E;</span>
+      <h3>Calidad sobre Velocidad</h3>
+      <p>El objetivo no es terminar antes para trabajar menos, sino terminar mejor para impactar más.</p>
+    </div>
+    <div class="principle-card">
+      <span class="principle-icon">&#x1F504;</span>
+      <h3>Conocimiento Compartido</h3>
+      <p>Si descubrís un prompt que ahorra una hora de trabajo, es tu deber compartirlo. Evolucionamos como área.</p>
+    </div>
+    <div class="principle-card">
+      <span class="principle-icon">&#x1F9E0;</span>
+      <h3>Human-in-the-Loop</h3>
+      <p>Todo código generado pasa por code review humano. Cero merge sin al menos una aprobación de un par.</p>
+    </div>
+    <div class="principle-card">
+      <span class="principle-icon">&#x1F4C8;</span>
+      <h3>Curiosidad Obligatoria</h3>
+      <p>La IA cambia todas las semanas. Mantenerse actualizado no es tarea extra, es parte del rol.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== RIESGOS ==================== -->
+<section class="section" id="riesgos">
+  <div class="section-header">
+    <h2>Mitigación de Riesgos</h2>
+    <p>Los riesgos reales de adoptar AI y cómo los enfrentamos como equipo.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="risks-table">
+      <thead>
+        <tr>
+          <th>Riesgo</th>
+          <th>Severidad</th>
+          <th>Descripción</th>
+          <th>Mitigación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Alucinaciones Técnicas</td>
+          <td><span class="risk-severity risk-high">Alta</span></td>
+          <td>La IA sugiere código que parece correcto pero tiene fallos de lógica o vulnerabilidades de seguridad.</td>
+          <td>Human-in-the-loop obligatorio. Ningún código entra sin code review humano. Puntos de control definidos.</td>
+        </tr>
+        <tr>
+          <td>Atrofia de Habilidades</td>
+          <td><span class="risk-severity risk-high">Alta</span></td>
+          <td>Juniors que no desarrollan pensamiento lógico porque la IA siempre resuelve la parte difícil.</td>
+          <td>Code Reviews Explicativos: si el autor no puede explicar la lógica, no se aprueba el PR.</td>
+        </tr>
+        <tr>
+          <td>Deuda Técnica Acelerada</td>
+          <td><span class="risk-severity risk-med">Media</span></td>
+          <td>Miles de líneas generadas con patrones inconsistentes que en 6 meses son imposibles de mantener.</td>
+          <td>Estándares de Arquitectura en CLAUDE.md. El Referente Cross audita. La IA se adapta a nuestra arquitectura.</td>
+        </tr>
+        <tr>
+          <td>Vendor Lock-in</td>
+          <td><span class="risk-severity risk-med">Media</span></td>
+          <td>Dependencia total de una sola API. Si cambian precios o política de privacidad, el área queda rehén.</td>
+          <td>Estrategia Multi-modelo. API Gateway centralizado. Cambiar el modelo en un solo lugar sin afectar equipos.</td>
+        </tr>
+        <tr>
+          <td>Propiedad Intelectual</td>
+          <td><span class="risk-severity risk-med">Media</span></td>
+          <td>La IA sugiere código con licencias restrictivas (GPL) que contamina el repositorio del cliente.</td>
+          <td>Enterprise con filtros de código público. Alertas para coincidencias con repositorios abiertos.</td>
+        </tr>
+        <tr>
+          <td>Deuda de Comprensión</td>
+          <td><span class="risk-severity risk-high">Alta</span></td>
+          <td>El reviewer aprueba código generado que no entiende. Bugs difíciles de diagnosticar a futuro.</td>
+          <td>Si el reviewer no entiende el código, no se aprueba. Documentación de decisiones no triviales obligatoria.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer">
+  <p><strong>Guía de Adopción AI — LATAM Delivery</strong></p>
+  <p style="margin-top:4px;">Estrategia de Operacionalización 2026 · Claude Code como herramienta central</p>
+  <p style="margin-top:8px; font-size:0.7rem;">Documento vivo — actualizado con cada fase de implementación</p>
+</footer>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+  function toggleRole(headerEl) {
+    var card = headerEl.parentElement;
+    card.classList.toggle('is-open');
+  }
+</script>
+
+</body>
+</html>
